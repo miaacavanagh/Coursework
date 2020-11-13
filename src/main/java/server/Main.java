@@ -13,7 +13,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 
-public class Main {
+public class Main {//
 
     public static Connection db = null;
 
@@ -29,7 +29,7 @@ public class Main {
         config.register(MultiPartFeature.class);            // support multipart HTML forms
         ServletHolder servlet = new ServletHolder(new ServletContainer(config));  //Instantiate the Servlet
 
-        Server server = new Server(8081);                   // prepare our Jetty Server to listen on port 8081
+        Server server = new Server(8082);                   // prepare our Jetty Server to listen on port 8081
         ServletContextHandler context = new ServletContextHandler(server, "/");  // instantiate the Server
         context.addServlet(servlet, "/*");                  // connect the Servlet to the Server
 
