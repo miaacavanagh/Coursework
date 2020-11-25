@@ -1,3 +1,8 @@
 body {
     background-color: lightblue;
 }
+<form id="uploadForm" enctype="multipart/form-data">
+<input id="the-file" name="file" type="file">
+</form>
+<button id="uploadImage" class="button" onclick='uploadImage();' >UPLOAD IMAGE</button>
+
