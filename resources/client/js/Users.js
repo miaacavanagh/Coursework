@@ -46,6 +46,26 @@ function UsersLogin() {
         }
     });
 }
+function addUser() {
+    debugger;
+    console.log("Invoked addUser() ");
+    let url = "/users/add";
+    let formData = new FormData(document.getElementById('signUpForm'));
+
+    fetch(url, {
+        method: "POST",
+        body: formData,
+    }).then(response => {
+        return response.json();                 //now return that promise to JSON
+    }).then(response => {
+        if (response.hasOwnProperty("Error")) {
+            alert(JSON.stringify(response));        // if it does, convert JSON object to string and alert
+        } else {
+            alert("sucessfully signed up, please log in.");
+            window.open("/client/login.html", "_self");       //open index.html in same tab
+        }
+    });
+}
 
 function logout() {
     debugger;

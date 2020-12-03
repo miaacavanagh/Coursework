@@ -7,10 +7,22 @@
     <script src="/client/js/users.js"></script>
 </head>
 <body>
+<div>
+
 <form id="LoginForm">
     <input type="text" name="UserName" id="UserName">
     <input type="password" name="PassWord" id="PassWord">
 </form>
-<button class="button" onclick='UsersLogin();'>LOGIN</button>  <!--UsersLogin()in users.js-->
+<button class="button" onclick='UsersLogin();'>LOGIN</button>
+</div>
+
+<div>
+<h1>Sign UP</h1>
+<form id="signUpForm">
+    <input type="text" name="UserName">
+    <input type="password" name="PassWord">
+</form>
+<button class="button" onclick='addUser();'>Sign UP</button><!--UsersLogin()in users.js-->
+</div>
 </body>
 </html>

@@ -7,6 +7,9 @@ import server.Main;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.xml.bind.DatatypeConverter;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.UUID;
@@ -60,12 +63,13 @@ public class Users{
     }
     @POST
     @Path("add")
-    public String UsersAdd(@FormDataParam("UserID") Integer UserID, @FormDataParam("UserName") String UserName) {
+    public String UsersAdd(@FormDataParam("UserID") Integer UserID, @FormDataParam("UserName") String UserName, @FormDataParam("PassWord") String PassWord) {
         System.out.println("Invoked Users.UsersAdd()");
         try {
-            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Users (UserID, UserName) VALUES (?, ?)");
-            ps.setInt(1, UserID);
-            ps.setString(2, UserName);
+            String hashedPassword = generateHash(PassWord);
+            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Users ( UserName, password) VALUES (?, ?)");
+            ps.setString(1, UserName);
+            ps.setString(2, hashedPassword);
             ps.execute();
             return "{\"OK\": \"Added user.\"}";
         } catch (Exception exception) {
@@ -111,12 +115,13 @@ public class Users{
     public String UsersLogin(@FormDataParam("UserName") String UserName, @FormDataParam("PassWord") String PassWord) {
         System.out.println("Invoked loginUser() on path users/login");
         try {
+            String hashedPassword = generateHash(PassWord);
             PreparedStatement ps1 = Main.db.prepareStatement("SELECT password FROM Users WHERE UserName = ?");
             ps1.setString(1, UserName);
             ResultSet loginResults = ps1.executeQuery();
             if (loginResults.next() == true) {
                 String correctPassword = loginResults.getString(1);
-                if (PassWord.equals(correctPassword)) {
+                if (hashedPassword.equals(correctPassword)) {
                     String Token = UUID.randomUUID().toString();
                     PreparedStatement ps2 = Main.db.prepareStatement("UPDATE Users SET Token = ? WHERE UserName = ?");
                     ps2.setString(1, Token);
@@ -137,6 +142,7 @@ public class Users{
             return "{\"Error\": \"Server side error!\"}";
         }
     }
+
     @POST
     @Path("logout")
     public static String logout(@CookieParam("Token") String Token){
@@ -161,6 +167,16 @@ public class Users{
             return "{\"error\": \"Server side error!\"}";
         }
     }
+    public static String generateHash(String text) {
+        try {
+            MessageDigest hasher = MessageDigest.getInstance("MD5");
+            hasher.update(text.getBytes());
+            return DatatypeConverter.printHexBinary(hasher.digest()).toUpperCase();
+        } catch (NoSuchAlgorithmException nsae) {
+            return nsae.getMessage();
+        }
+    }
+
 
 
 
